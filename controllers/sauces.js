@@ -52,13 +52,42 @@ exports.getAllSauces = (req, res, next) => {
 };
 
 exports.addLikes = (req, res, next) => {
-    Sauce.findOne({ _id: req.params.id })
-        .then(sauce => {
-            console.log(sauce.likes)
-            sauce.likes +1;
-            console.log(sauce.likes)
-            sauce.likes +1;
-            console.log(sauce.likes)
-        })
+    let userId = req.body.userId, like = req.body.like;
+    Sauce.findOne({ _id: req.params.id }).exec(function (error, sauce){
+        let msg = "", usersL = sauce.usersLiked.indexOf(userId), usersD = sauce.usersDisliked.indexOf(userId);
+
+    if(like == 0 && usersL >-1){
+        sauce.likes--;
+        sauce.usersLiked.splice(usersL,1);
+        msg = "Unliked !";
+    } else if(like == 0 && usersD >-1){
+        sauce.dislikes--;
+        sauce.usersDisliked.splice(usersD,1);
+        msg = "Undisliked !";
+    };
+  
+    if(like == 1){
+        sauce.likes++;
+        if (sauce.usersLiked.length > 0){
+          sauce.usersLiked=[userId];
+        } else{
+          sauce.usersLiked.push(userId);
+        }
+        msg = "Like pris en compte !";
+    };
+  
+    if(like == -1){
+        sauce.dislikes++;
+        if (sauce.usersDisliked.length > 0){
+          sauce.usersDisliked=[userId];
+        } else{
+          sauce.usersDisliked.push(userId);
+        }
+        msg = "Dislike pris en compte !";
+    };
+  
+    sauce.save()
+        .then(() => res.status(201).json({ message: msg}))
         .catch(error => res.status(400).json({ error }));
+    });
 };
