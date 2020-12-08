@@ -1,7 +1,11 @@
+// Importation du package HTTP
 const http = require('http');
 require('dotenv').config()
+
+// Ajout d'express
 const app = require('./app');
 
+// Fonction qui renvoie un port valide
 const normalizePort = val => {
   const port = parseInt(val, 10);
 
@@ -16,6 +20,7 @@ const normalizePort = val => {
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+// Détection et gestion des erreurs
 const errorHandler = error => {
   if (error.syscall !== 'listen') {
     throw error;
@@ -36,8 +41,10 @@ const errorHandler = error => {
   }
 };
 
+// création du serveur et appel d'express
 const server = http.createServer(app);
 
+// Ecouteur d'évènement
 server.on('error', errorHandler);
 server.on('listening', () => {
   const address = server.address();

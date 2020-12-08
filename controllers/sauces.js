@@ -1,8 +1,8 @@
-
+// Import des packages
 const Sauce = require('../models/Sauces');
 const fs = require('fs');
 
-
+// Fonction de création de sauce
 exports.createSauces = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce);
     delete sauceObject._id;
@@ -15,6 +15,7 @@ exports.createSauces = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
 }
 
+// Fonction de modification de sauce
 exports.modifySauces = (req, res, next) => {
     const sauceObject = req.file ?
         { 
@@ -26,6 +27,7 @@ exports.modifySauces = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
 };
 
+// Fonction de suppression de sauce
 exports.deleteSauces = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
@@ -39,18 +41,21 @@ exports.deleteSauces = (req, res, next) => {
         .catch(error => res.status(500).json({ error }));
 };
 
+// Fonction de récupération d'une sauce
 exports.getOneSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => res.status(200).json(sauce))
         .catch(error => res.status(400).json({ error }));
 };
 
+// Fonction de récupération de toutes les sauces
 exports.getAllSauces = (req, res, next) => {
     Sauce.find()
         .then(sauces => res.status(200).json(sauces))
         .catch(error => res.status(400).json({ error }));
 };
 
+// Fonction de gestion des likes / dislikes
 exports.addLikes = (req, res, next) => {
     let userId = req.body.userId, like = req.body.like;
     Sauce.findOne({ _id: req.params.id }).exec(function (error, sauce){
